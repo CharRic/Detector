@@ -1,0 +1,14 @@
+Foreground Aperture - Kentaro sleeping and waking at desk
+00000 - start, Kentaro motionless
+00481 - starts moving
+00505 - out of frame
+00919 - re-enters
+00942 - motionless agaiin
+01485 - starts moving
+01509 - out of frame
+02112 - end
+
+Testing
+00260 - 00459 Train (Kentaro still)
+00460 - 00489 Run
+00489 Evaluate (Few frames after Kentaro starts moving)

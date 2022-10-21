@@ -1,0 +1,12 @@
+Sudden light change in Vision Lab Machine Room
+00000 - start with lights on
+00796 - John enters from camera to turn lights off
+00829 - John leaves image with lights off
+01844 - Barry enters, turns on lights, sits at computer
+02202 - Barry gone, lights off
+02714 - last frame
+
+Testing (for nominal, non-frame-based background technique)
+01640 - 1839 Train (lights off)
+01839 - 01865 Run
+01865 Evaluate (lights on, Barry in scene, door reclosed)

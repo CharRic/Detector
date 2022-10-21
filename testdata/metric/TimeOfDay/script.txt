@@ -1,0 +1,14 @@
+Gradual light change in EasyLiving lab
+00000 - start with lights dim, brightening begins
+01831 - John enters scene, sits, reads book
+01918 - John leaves
+03072 - John enters, sits, reads phone book
+03244 - John leaves, lights start dimming from max brightness
+04739 - John enters, sits, reads phone book
+04933 - John leaves
+05889 - end, ligts back to dim
+
+Testing
+00000 - 00199 Train (lights dim & brightening)
+00200 - 01850 Run
+01850 Evaluate (John in scene, lights brighter)

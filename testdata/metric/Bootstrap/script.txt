@@ -1,0 +1,8 @@
+Bootstrap - 12.5 minutes looking toward Building 31 cafeteria condiment bar
+00000 - start
+03054 - end
+
+Testing
+00000 - 00200 Train
+00201 - 00299 Run
+00299 Evaluate (person clearly in foreground in image center)
