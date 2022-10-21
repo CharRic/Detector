@@ -1,0 +1,4 @@
+Problem from frame2video.py:
+    please clear the directory, make sure there are only frames to be processed, any other file will lead to problem. Meanwhile, rename the frames to the index of frame in video.
+
+Result will be saved in ./testdata/result . There will be three files: two videos and a picture. Otherwise, please check whether anything wrong.
