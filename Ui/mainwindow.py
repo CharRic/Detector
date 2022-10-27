@@ -191,7 +191,7 @@ class Ui_MainWindow(object):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.labelBackgroundImg.sizePolicy().hasHeightForWidth())
         self.labelBackgroundImg.setSizePolicy(sizePolicy)
-        self.labelBackgroundImg.setStyleSheet("heiht:100%;\n"
+        self.labelBackgroundImg.setStyleSheet("height:100%;\n"
 "border:0;")
         self.labelBackgroundImg.setText("")
         self.labelBackgroundImg.setObjectName("labelBackgroundImg")
