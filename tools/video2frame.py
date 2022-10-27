@@ -51,4 +51,5 @@ def video2frame(videos_path, frames_path, gap=1, type='.bmp', start_time=0, end_
 
 
 if __name__ == '__main__':
+    video2frame("../testdata/WavingTrees.mp4",r"C:\Users\86137\Desktop\sa",1)
     print("This is frame2video.py")

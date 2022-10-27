@@ -41,6 +41,9 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
         self.video.resize(540, 460)
         self.player.setVideoOutput(self.video)
 
+        #TODO
+        self.pushButtonObject.setDisabled(True)
+
     def connecter(self):
         # 前端事件触发绑定
         self.actionInformation.triggered.connect(self.information_page)

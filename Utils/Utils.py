@@ -111,8 +111,10 @@ def background_detection(path, textBrower, algo="MOG2"):
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))  # 标记帧号
         mask_ = np.reshape(mask_all, (fhight, fwidth, 1))
         videoWriterAgg.write(np.hstack((frame1, np.multiply(mask_, frame), mask_3D)))  # 获取对比图
-        # cv2.imshow("test",np.hstack((frame1,np.multiply(mask_,frame),mask_3D)))
-        # keyboard = cv2.waitKey(30)
+        # testret,testmask=cv2.threshold(mask_processed,180,255,cv2.THRESH_BINARY)
+        # testmask = np.reshape(testmask, (fhight, fwidth, 1))
+        # cv2.imshow("test",testmask)
+        # keyboard = cv2.waitKey(0)
         # if keyboard == 'q' or keyboard == 27:
         #     break
         if count % 50 == 0:  # 每隔50帧输出提示信息
