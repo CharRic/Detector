@@ -4,7 +4,7 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: video2frame.py
-@ Version 1.0
+@ Version 1.1
 @ information: Contain a function for generating the frames from a video.
 '''
 import cv2

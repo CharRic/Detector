@@ -4,17 +4,17 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: Utils.py
-@ Version 1.0
+@ Version 1.1
 @ information: Useful functions for detector.
 '''
 import os
 import time
 
-import cv2
-import numpy as np
-from PyQt5 import QtWidgets
 from PyQt5.QtMultimedia import QMediaPlayer
 from PyQt5.QtMultimediaWidgets import QVideoWidget
+
+from TrackingTools.rectangle_tools import *
+from TrackingTools.tracking_tools import *
 
 
 def get_cover(path):
@@ -27,11 +27,13 @@ def get_cover(path):
     success, image = video.read()  # 选取第30帧图或最后一帧作为视频封面保存。
     n = 1
     im = image
+
     while n < 30 and success:
         im = image
         success, image = video.read()
         n += 1
-    cv2.imwrite('./icon/cover.jpg', im)
+
+    cv2.imwrite('./icon/cover0.jpg', im)
 
 
 class myvideo(QVideoWidget):  # 集成重写了一个新的用于播放视频的类，供显示所选视频预览
@@ -52,6 +54,62 @@ class myvideo(QVideoWidget):  # 集成重写了一个新的用于播放视频的
     def combine_player(self, player):
         # 与主界面的player绑定
         self.player = player
+
+
+def object_tracking(path, track_window, tracking_param, textBrower):
+    '''
+    目标跟踪
+    :param path: 视频所在路径
+    :param track_window: 目标框(x,y,w,h) 其中，左上角坐标（x,y）宽度w，高度h
+    :param tracking_param: 参数，epslion以及迭代次数
+    :param textBrower: 信息框
+    :return: None
+    '''
+
+    cap = cv2.VideoCapture(path)
+
+    root_path = os.path.split(path)[0]
+    video_result_path = os.path.join(root_path, "result/result.mp4")
+
+    count = 0
+    ffps = cap.get(cv2.CAP_PROP_FPS)  # 帧数
+    fwidth = int(cap.get(cv2.CAP_PROP_FRAME_WIDTH))  # 宽度
+    fhight = int(cap.get(cv2.CAP_PROP_FRAME_HEIGHT))  # 高度
+
+    videoWriter = cv2.VideoWriter(video_result_path, cv2.VideoWriter_fourcc(*'mp4v'), ffps, (fwidth, fhight))  # 视频存储
+
+    ret, frame = cap.read()  # 读取帧
+
+    [x, y, width, height] = track_window  # 获取目标框数据
+    end_epsilon, end_iteration = tracking_param  # 获取meanshift中止参数
+
+    roi = frame[y:y + height, x:x + width]  # 目标对象
+    C, normalized_weight = cal_C(roi)  # 计算C和空间权重
+    model_hist, _ = cal_hist(roi, normalized_weight, C, 16, 3)  # 计算模型颜色统计直方图
+
+    # 逐帧处理
+    while True:
+        ret, frame = cap.read()
+        count += 1
+        if ret == True:
+            track_window = mean_shift(frame, track_window, model_hist, normalized_weight, C, end_iteration,
+                                      end_epsilon)  # meanshift获取下一个目标狂
+
+            x, y, w, h = track_window
+
+            img2 = cv2.rectangle(frame, (x, y), (x + w, y + h), 255, 2)  # 画框
+
+            videoWriter.write(img2)  # 写入结果视频
+
+            # 提示用户运行状态
+            if count % 10 == 0:
+                textBrower.append(time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t计算中...")
+        else:
+            break
+
+    # 结束
+    textBrower.append(time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t处理完成！")
+    videoWriter.release()
 
 
 def background_detection(path, textBrower, algo="MOG2"):

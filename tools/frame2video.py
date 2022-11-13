@@ -4,15 +4,16 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: frame2video.py
-@ Version 1.0
+@ Version 1.1
 @ information: Contain a function for organizing the frames to a video.
 '''
 
-from tqdm import tqdm
-import cv2
-from PIL import Image
 import os
+
+import cv2
 import numpy as np
+from PIL import Image
+from tqdm import tqdm
 
 
 def frame2video(im_dir, video_dir, fps=10, start_frame=0, stop_frame=-1):

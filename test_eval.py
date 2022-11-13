@@ -4,13 +4,13 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: test_new.py
-@ Version 1.0
+@ Version 1.1
 @ information: To evaluate the outcome
 '''
 
 import cv2
-import numpy as np
 import matplotlib.pyplot as plt
+import numpy as np
 
 from tools.eval import MSE_LOSS
 

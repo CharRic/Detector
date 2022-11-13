@@ -4,10 +4,10 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: DetectorUi.py
-@ Version 1.0
+@ Version 1.1
 @ information: The detector UI. Containing the eventFunction from Ui by users.
 '''
-
+import _thread
 import webbrowser
 
 from PyQt5.QtCore import QUrl
@@ -34,15 +34,13 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
         self.tabWidgetObject.setCurrentIndex(0)
         self.background_filename = ""
         self.object_filename = ""
-        self.background_carema_mode = 0
+        self.tracking_param = (0.5, 20)
+        self.track_window = [0, 0, 0, 0]
 
         self.video = myvideo()
         self.player = QMediaPlayer()
         self.video.resize(540, 460)
         self.player.setVideoOutput(self.video)
-
-        #TODO
-        self.pushButtonObject.setDisabled(True)
 
     def connecter(self):
         # 前端事件触发绑定
@@ -61,6 +59,8 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
         self.pushButtonBackgroundDetection.clicked.connect(self.backgroundDetection)
         self.pushButtonObjectDetection.clicked.connect(self.objectDetection)
 
+        self.pushButtonExit.clicked.connect(self.exit_system)
+
     def information_page(self):
         # 程序信息网页
         webbrowser.open("https://github.com/CharRic/Detector/blob/main/Information.txt", 1)
@@ -77,21 +77,23 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
         # 切换至背景检测页面
         self.stackedWidget.setCurrentIndex(1)
 
-    def object_Index(self):  # TODO
+    def object_Index(self):
         # 切换物体检测页面
         self.stackedWidget.setCurrentIndex(2)
 
-    def caremaModeChange(self):  # TODO
+    def caremaModeChange(self):
         # 摄像机模式切换
         self.tabWidgetObject.setCurrentIndex(1)
         if self.radioButtonObjectMove.isChecked():
             self.textBrowserObjectInformation.append(
-                time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t已切换至运动摄像机")
-            self.background_carema_mode = 1
+                time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t已选择parameter-1")
+            # 切换第一组参数
+            self.tracking_param = (0.5, 20)
         else:
             self.textBrowserObjectInformation.append(
-                time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t已切换至静止摄像机")
-            self.background_carema_mode = 0
+                time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t已选择parameter-2")
+            # 切换第二组参数
+            self.tracking_param = (1, 10)
 
     def background_video_upload(self):
         # 背景检测视频上传
@@ -109,28 +111,34 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
             self.show_img(0)
         self.background_filename = file_name[0]
 
-    def object_video_upload(self):  # TODO
+    def object_video_upload(self):
         # 目标检测视频上传
-        file_name = QFileDialog.getOpenFileName(self, caption="请选择文件", filter="视频文件(*MP4);")
+        file_name = QFileDialog.getOpenFileName(self, caption="请选择文件", filter="视频文件(*MP4);")  # 弹窗显示文件
         self.tabWidgetObject.setCurrentIndex(1)
-        if file_name[1] == file_name[0] and file_name[0] == "":
+        if file_name[1] == file_name[0] and file_name[0] == "":  # 提示未选择文件
             self.textBrowserObjectInformation.append(
                 time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t未选择文件")
-        else:
+        else:  # 读取视频文件，并提示用户框选目标区域
             self.textBrowserObjectInformation.append(
                 time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t文件" + str(
                     file_name[0].split('/')[-1]) + "已打开")
-            self.display_video(file_name[0])
-            get_cover(file_name[0])
+            self.track_window = initialize_video(file_name[0], self)
             self.show_img(1)
         self.object_filename = file_name[0]
 
-    def objectDetection(self):  # TODO
+    def objectDetection(self):
         # 目标检测
         self.tabWidgetObject.setCurrentIndex(1)
-        self.textBrowserObjectInformation.setText(time.strftime('%H:%M:%S', time.localtime(time.time())) + "\tstart")
-        self.textBrowserObjectInformation.append(
-            time.strftime('%H:%M:%S', time.localtime(time.time())) + "\tProcess finished")
+        if self.object_filename == "":  # 未选择视频
+            self.textBrowserObjectInformation.append(
+                time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t无可检测视频.")
+            return
+            # 开始检测
+        self.textBrowserObjectInformation.setText(
+            time.strftime('%H:%M:%S', time.localtime(time.time())) + "\t开始运行...")
+        # 计算放在线程内
+        _thread.start_new_thread(object_tracking, (
+        self.object_filename, self.track_window, self.tracking_param, self.textBrowserObjectInformation))
 
     def backgroundDetection(self):
         # 背景检测
@@ -156,9 +164,12 @@ class DetectorUi(Ui_MainWindow, QMainWindow):
 
     def show_img(self, index):
         # 视频缩略图显示
-        pixmap = QPixmap("./icon/cover.jpg")
+        pixmap = QPixmap("./icon/cover" + str(index) + ".jpg")
         pixmap = pixmap.scaled(368, 207)
         if index == 0:
             self.labelBackgroundImg.setPixmap(pixmap)
         else:
             self.labelObjectImg.setPixmap(pixmap)
+
+    def exit_system(self):
+        exit(0)

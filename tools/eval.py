@@ -4,7 +4,7 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: eval.py
-@ Version 1.0
+@ Version 1.1
 @ information: Contain a function for calculating the MSE loss between a reference image and a list of result images.
 '''
 from skimage.metrics import mean_squared_error

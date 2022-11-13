@@ -4,7 +4,7 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: Detector.py
-@ Version 1.0
+@ Version 1.1
 @ information: Interface instantiation ;Start function
 '''
 import sys
@@ -18,7 +18,6 @@ def main():
     app = QApplication(sys.argv)
     detector = DetectorUi()
     sys.exit(app.exec_())
-
 
 if __name__ == '__main__':
     main()

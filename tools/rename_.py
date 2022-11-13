@@ -4,11 +4,12 @@
 @ Time: 2022/10
 @ Institution: XiaMen University
 @ Name: rename_.py
-@ Version 1.0
+@ Version 1.1
 @ information: Contain a function for renaming the bmps under the path; especially for the resource from "https://www.microsoft.com/en-us/download/confirmation.aspx?id=54651"
 '''
 
 import os
+
 from tqdm import tqdm
 
 
